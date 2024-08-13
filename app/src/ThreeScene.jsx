@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import * as THREE from "three";
-
+import WebGL from "three/addons/capabilities/WebGL.js";
 const ThreeScene = () => {
   useEffect(() => {
     // Create scene
@@ -45,8 +45,16 @@ const ThreeScene = () => {
 
       renderer.render(scene, camera);
     };
-
-    animate();
+    // check compatibility and animate
+    if (WebGL.isWebGL2Available()) {
+      // browser supports webgl
+      animate();
+    } else {
+      // create a warning
+      const warning = WebGL.getWebGL2ErrorMessage();
+      // append the warning to the child
+      document.getElementById("container").appendChild(warning);
+    }
 
     // Handle window resize
     const handleResize = () => {
