@@ -1,61 +1,40 @@
-// src/ThreeScene.jsx
-
 import { useEffect } from "react";
 import * as THREE from "three";
-import WebGL from "three/addons/capabilities/WebGL.js";
+// import WebGL from "three/addons/capabilities/WebGL.js";
 const ThreeScene = () => {
   useEffect(() => {
-    // Create scene
-    const scene = new THREE.Scene();
-
-    // Create camera
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-
     // Create renderer
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-
-    // Create geometry
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-
+    // Create camera
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight,
+      1,
+      500
+    );
+    //   setting camera position
+    camera.position.set(0, 0, 100);
+    camera.lookAt(0, 0, 0);
+    // Create scene
+    const scene = new THREE.Scene();
     // Create material
-    const material = new THREE.MeshBasicMaterial({
-      color: 0xff2f00,
+    const material = new THREE.LineBasicMaterial({
+      color: 0x0000ff,
     });
-
-    // Create cube
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
-
-    // Set camera position
-    camera.position.z = 2;
-
-    // Animation function
-    const animate = () => {
-      requestAnimationFrame(animate);
-
-      cube.rotation.x += 0.03;
-      cube.rotation.y += 0.03;
-
-      renderer.render(scene, camera);
-    };
-    // check compatibility and animate
-    if (WebGL.isWebGL2Available()) {
-      // browser supports webgl
-      animate();
-    } else {
-      // create a warning
-      const warning = WebGL.getWebGL2ErrorMessage();
-      // append the warning to the child
-      document.getElementById("container").appendChild(warning);
-    }
-
+    // points
+    const points = [];
+    points.push(new THREE.Vector3(-10, 0, 0));
+    points.push(new THREE.Vector3(0, 10, 0));
+    points.push(new THREE.Vector3(10, 0, 0));
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    // create a new line
+    const line = new THREE.Line(geometry, material);
+    // adding line to scene
+    scene.add(line);
+    // render the camera and the scene
+    renderer.render(scene, camera);
     // Handle window resize
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
